@@ -67,12 +67,12 @@
                                     </a>
                                     <ul class="sub-menu">
                                         <li class="sub-menu-item">
-                                            <a href="add-product.html" class="">
+                                            <a href="{{route('admin.product.add')}}" class="">
                                                 <div class="text">Add Product</div>
                                             </a>
                                         </li>
                                         <li class="sub-menu-item">
-                                            <a href="products.html" class="">
+                                            <a href="{{route('admin.products')}}" class="">
                                                 <div class="text">Products</div>
                                             </a>
                                         </li>
@@ -140,7 +140,7 @@
                                     </a>
                                 </li>
                                 <li class="menu-item">
-                                    <a href="coupons.html" class="">
+                                    <a href="{{route('admin.coupons')}}" class="">
                                         <div class="icon"><i class="icon-grid"></i></div>
                                         <div class="text">Coupns</div>
                                     </a>
@@ -162,7 +162,7 @@
                                 <li class="menu-item">
                                     <form method="POST" action="{{ route('logout')}}" id='logout-form'>
                                     @csrf
-                                        <a href="{{route('logout')}}" class="" 
+                                        <a href="{{route('logout')}}" class=""
                                     onclick="event.preventDefault();document.getElementById('logout-form').submit();" >
                                         <div class="icon"><i class="icon-settings"></i></div>
                                         <div class="text">Logout</div>
@@ -455,7 +455,7 @@
                     </div>
                     <div class="main-content">
                         @yield('content')
-                        
+
 
                         <div class="bottom-page">
                             <div class="body-text">Copyright © 2024 SurfsideMedia</div>
@@ -469,8 +469,8 @@
 
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>   
-    <script src="{{ asset('js/sweetalert.min.js') }}"></script>    
+    <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('js/sweetalert.min.js') }}"></script>
     <script src="{{ asset('js/apexcharts/apexcharts.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
     <script>

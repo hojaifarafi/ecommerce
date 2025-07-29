@@ -52,7 +52,7 @@
                                             </div>
                                             <div class="upload-image flex-grow">
                                                 <div class="item" id="imgpreview" style="display:none">
-                                                    <img src="upload-1.html" class="effect8" alt="">
+                                                    <img class="effect8" alt="img" id="previ">
                                                 </div>
                                                 <div id="upload-file" class="item up-load">
                                                     <label class="uploadfile" for="myFile">
@@ -61,7 +61,7 @@
                                                         </span>
                                                         <span class="body-text">Drop your images here or select <span
                                                                 class="tf-color">click to browse</span></span>
-                                                        <input type="file" id="myFile" name="image" accept="image/*">
+                                                        <input type="file" id="myFile" name="image" accept="image/*" onchange="image_preview()">
                                                     </label>
                                                 </div>
                                             </div>
@@ -78,3 +78,13 @@
                             </div>
                         </div>
 @endsection
+@push('scripts')
+<script>
+function image_preview(){
+    let img = document.getElementById('myFile');
+    var pre1 = document.getElementById('imgpreview');
+    pre1.style.removeProperty('display');
+    document.getElementById('previ').src = window.URL.createObjectURL(img.files[0]);
+}
+</script>
+@endpush
