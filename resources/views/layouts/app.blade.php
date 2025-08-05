@@ -323,7 +323,7 @@
                 <a href="about.html" class="navigation__link">About</a>
               </li>
               <li class="navigation__item">
-                <a href="contact.html" class="navigation__link">Contact</a>
+                <a href="{{route('home.contact')}}" class="navigation__link">Contact</a>
               </li>
             </ul>
           </div>
@@ -412,7 +412,7 @@
                 <a href="about.html" class="navigation__link">About</a>
               </li>
               <li class="navigation__item">
-                <a href="contact.html" class="navigation__link">Contact</a>
+                <a href="{{route('home.contact')}}" class="navigation__link">Contact</a>
               </li>
             </ul>
           </nav>
@@ -433,8 +433,8 @@
                 <form action="#" method="GET" class="search-field container">
                   <p class="text-uppercase text-secondary fw-medium mb-4">What are you looking for?</p>
                   <div class="position-relative">
-                    <input class="search-field__input search-popup__input w-100 fw-medium" type="text"
-                      name="search-keyword" placeholder="Search products" />
+                    <input class="search-field__input search-popup__input w-100 fw-medium" type="text" id="search-input"
+                      name="search-keyword" placeholder="Search products" onkeyup="searchProducts()" autocomplete="off"/>
                     <button class="btn-icon search-popup__submit" type="submit">
                       <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
@@ -445,18 +445,9 @@
                   </div>
 
                   <div class="search-popup__results">
-                    <div class="sub-menu search-suggestion">
-                      <h6 class="sub-menu__title fs-base">Quicklinks</h6>
-                      <ul class="sub-menu__list list-unstyled">
-                        <li class="sub-menu__item"><a href="shop2.html" class="menu-link menu-link_us-s">New Arrivals</a>
-                        </li>
-                        <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Dresses</a></li>
-                        <li class="sub-menu__item"><a href="shop3.html" class="menu-link menu-link_us-s">Accessories</a>
-                        </li>
-                        <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Footwear</a></li>
-                        <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Sweatshirt</a></li>
-                      </ul>
-                    </div>
+                    <ul id="box-content-search">
+
+                    </ul>
 
                     <div class="search-result row row-cols-5"></div>
                   </div>
@@ -676,6 +667,49 @@
     <script src="{{asset('js/sweetalert.min.js') }}"></script>
     <script src="{{asset('assets/js/plugins/swiper.min.js') }}"></script>
     <script src="{{asset('assets/js/plugins/countdown.js') }}"></script>
+    <script>
+      function searchProducts() {
+        let input = document.getElementById('search-input').value;
+        let boxContentSearch = document.getElementById('box-content-search');
+        boxContentSearch.innerHTML = ''; // Clear previous results
+
+        if (input.length > 2) {
+          // Simulate an AJAX call to fetch search results
+          fetch(`/search/${input}`)
+            .then(response => response.json())
+            .then(data => {
+              data.forEach(product => {
+                let url = `/shop/${product.slug}`; // Assuming product has a 'slug' property
+                console.log(url);
+                let li = document.createElement('li');
+                li.innerHTML = `<ul>                                  
+                                    <li class="product-item mb-10 gap-14">
+                                      <a href="${url}" class="d-flex">
+                                        <div class="image no-bg">
+                                            <img src="/uploads/products/thumbnails/${product.image}" alt="${product.name}" class="img-fluid" />
+                                        </div>
+                                        <div class="ms-5">
+                                          <div>${product.name}</div>
+                                            <div class="">
+                                                <span class="text-secondary">$</span>
+                                                <span class="text-primary">${product.regular_price}</span>
+                                            </div>
+                                            <div >
+                                                <span class="text-secondary">${product.short_description} </span>
+                                            </div>
+                                        </div>
+                                        </a>
+                                    </li>
+                                    <li class="mb-10">
+                                      <div class"divider"></div>
+                                      </li>
+                                </ul>`; // Assuming product has a 'name' property
+                boxContentSearch.appendChild(li);
+              });
+            });
+        }
+      }
+    </script>
     <script src="{{asset('assets/js/theme.js') }}"></script>
     @stack('scripts')
   </body>
