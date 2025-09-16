@@ -12,7 +12,7 @@ class HomeController extends Controller
     {
         $slides = \App\Models\Slide::where('status', 1)->take(3)->get();
         $categories = \App\Models\Category::orderBy('name')->get();
-        $sproducts = Product::WhereNotNull('sale_price')->where('sale_price', '<>', '')->inRandomOrder()->take(8)->get();
+        $sproducts = Product::WhereNotNull('sale_price')->inRandomOrder()->take(8)->get();
         $fproducts = Product::where('featured', 1)->inRandomOrder()->take(8)->get();
         return view('index', compact('slides', 'categories', 'sproducts', 'fproducts'));
     }
