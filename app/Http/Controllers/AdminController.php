@@ -34,19 +34,41 @@ class AdminController extends Controller
 
     FROM orders;");
         //dd($dashboardData);
-        $monthlyDatas = DB::select("SELECT M.id AS MonthNo, M.name AS MonthName,
-                    IFNULL(D.TotalAmount,0) AS TotalAmount,
-                    IFNULL(D.TotalOrderedAmount,0) AS TotalOrderedAmount,
-                    IFNULL(D.TotalDeliveredAmount,0) AS TotalDeliveredAmount,
-                    IFNULL(D.TotalCanceledAmount,0) AS TotalCanceledAmount FROM month_names M
-                    LEFT JOIN (SELECT DATE_FORMAT(created_at, '%b') AS MonthName,
-                    MONTH(created_at) AS MonthNo,
-                    sum(total) AS TotalAmount,
-                    sum(if(status='ordered',total,0)) AS TotalOrderedAmount,
-                    sum(if(status='delivered',total,0)) AS TotalDeliveredAmount,
-                    sum(if(status='canceled',total,0)) AS TotalCanceledAmount
-                    From orders WHERE YEAR(created_at)=YEAR(NOW()) GROUP BY YEAR(created_at), MONTH(created_at), DATE_FORMAT(created_at, '%b')
-                    Order By MONTH(created_at)) D On D.MonthNo=M.id");
+        $monthlyDatas = DB::select("SELECT 
+    M.id AS MonthNo, 
+    M.name AS MonthName, 
+    IFNULL(D.TotalAmount, 0) AS TotalAmount,
+    IFNULL(D.TotalOrderedAmount, 0) AS TotalOrderedAmount,
+    IFNULL(D.TotalDeliveredAmount, 0) AS TotalDeliveredAmount,
+    IFNULL(D.TotalCanceledAmount, 0) AS TotalCanceledAmount
+FROM month_names M
+LEFT JOIN (
+    SELECT 
+        CAST(strftime('%m', created_at) AS INTEGER) AS MonthNo,
+        CASE CAST(strftime('%m', created_at) AS INTEGER)
+            WHEN 1 THEN 'Jan'
+            WHEN 2 THEN 'Feb'
+            WHEN 3 THEN 'Mar'
+            WHEN 4 THEN 'Apr'
+            WHEN 5 THEN 'May'
+            WHEN 6 THEN 'Jun'
+            WHEN 7 THEN 'Jul'
+            WHEN 8 THEN 'Aug'
+            WHEN 9 THEN 'Sep'
+            WHEN 10 THEN 'Oct'
+            WHEN 11 THEN 'Nov'
+            WHEN 12 THEN 'Dec'
+        END AS MonthName,
+
+        SUM(total) AS TotalAmount,
+        SUM(CASE WHEN status = 'ordered' THEN total ELSE 0 END) AS TotalOrderedAmount,
+        SUM(CASE WHEN status = 'delivered' THEN total ELSE 0 END) AS TotalDeliveredAmount,
+        SUM(CASE WHEN status = 'canceled' THEN total ELSE 0 END) AS TotalCanceledAmount
+
+    FROM orders
+    WHERE strftime('%Y', created_at) = strftime('%Y', 'now')
+    GROUP BY MonthNo
+    ORDER BY MonthNo) D ON D.MonthNo = M.id;");
             $monthlyDatas = collect($monthlyDatas)->sortBy('MonthNo')->values()->all();
 
         $AmountM = implode(',', array_column($monthlyDatas, 'TotalAmount'));
