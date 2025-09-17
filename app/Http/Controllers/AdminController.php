@@ -21,15 +21,18 @@ class AdminController extends Controller
     public function index()
     {
         $orders = Order::orderBy('created_at', 'DESC')->take(10)->get();
-        $dashboardData = DB::select("select sum(total) as total_amount,
-        sum(if(status = 'delivered', total, 0)) as delivered_amount,
-        sum(if(status = 'canceled', total, 0)) as canceled_amount,
-        sum(if(status = 'ordered', total, 0)) as pending_amount,
-        count(id) as total_orders,
-        count(if(status = 'delivered', id, null)) as delivered_orders,
-        count(if(status = 'canceled', id, null)) as canceled_orders,
-        count(if(status = 'ordered', id, null)) as pending_orders
-        from orders");
+        $dashboardData = DB::select("SELECT 
+    SUM(total) AS total_amount,
+    SUM(CASE WHEN status = 'delivered' THEN total ELSE 0 END) AS delivered_amount,
+    SUM(CASE WHEN status = 'canceled' THEN total ELSE 0 END) AS canceled_amount,
+    SUM(CASE WHEN status = 'ordered' THEN total ELSE 0 END) AS pending_amount,
+
+    COUNT(id) AS total_orders,
+    COUNT(CASE WHEN status = 'delivered' THEN id ELSE NULL END) AS delivered_orders,
+    COUNT(CASE WHEN status = 'canceled' THEN id ELSE NULL END) AS canceled_orders,
+    COUNT(CASE WHEN status = 'ordered' THEN id ELSE NULL END) AS pending_orders
+
+    FROM orders;");
         //dd($dashboardData);
         $monthlyDatas = DB::select("SELECT M.id AS MonthNo, M.name AS MonthName,
                     IFNULL(D.TotalAmount,0) AS TotalAmount,
