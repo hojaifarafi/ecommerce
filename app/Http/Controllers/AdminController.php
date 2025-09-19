@@ -37,38 +37,30 @@ class AdminController extends Controller
         $monthlyDatas = DB::select("SELECT 
     M.id AS MonthNo, 
     M.name AS MonthName, 
-    IFNULL(D.TotalAmount, 0) AS TotalAmount,
-    IFNULL(D.TotalOrderedAmount, 0) AS TotalOrderedAmount,
-    IFNULL(D.TotalDeliveredAmount, 0) AS TotalDeliveredAmount,
-    IFNULL(D.TotalCanceledAmount, 0) AS TotalCanceledAmount
-FROM month_names M
+    COALESCE(D.TotalAmount, 0) AS TotalAmount, 
+    COALESCE(D.TotalOrderedAmount, 0) AS TotalOrderedAmount, 
+    COALESCE(D.TotalDeliveredAmount, 0) AS TotalDeliveredAmount, 
+    COALESCE(D.TotalCanceledAmount, 0) AS TotalCanceledAmount
+FROM 
+    month_names M
 LEFT JOIN (
     SELECT 
-        CAST(strftime('%m', created_at) AS INTEGER) AS MonthNo,
-        CASE CAST(strftime('%m', created_at) AS INTEGER)
-            WHEN 1 THEN 'Jan'
-            WHEN 2 THEN 'Feb'
-            WHEN 3 THEN 'Mar'
-            WHEN 4 THEN 'Apr'
-            WHEN 5 THEN 'May'
-            WHEN 6 THEN 'Jun'
-            WHEN 7 THEN 'Jul'
-            WHEN 8 THEN 'Aug'
-            WHEN 9 THEN 'Sep'
-            WHEN 10 THEN 'Oct'
-            WHEN 11 THEN 'Nov'
-            WHEN 12 THEN 'Dec'
-        END AS MonthName,
-
+        EXTRACT(MONTH FROM created_at)::INT AS MonthNo,
+        TO_CHAR(created_at, 'Mon') AS MonthName,
         SUM(total) AS TotalAmount,
         SUM(CASE WHEN status = 'ordered' THEN total ELSE 0 END) AS TotalOrderedAmount,
         SUM(CASE WHEN status = 'delivered' THEN total ELSE 0 END) AS TotalDeliveredAmount,
         SUM(CASE WHEN status = 'canceled' THEN total ELSE 0 END) AS TotalCanceledAmount
-
-    FROM orders
-    WHERE strftime('%Y', created_at) = strftime('%Y', 'now')
-    GROUP BY MonthNo
-    ORDER BY MonthNo) D ON D.MonthNo = M.id;");
+    FROM 
+        orders
+    WHERE 
+        EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+    GROUP BY 
+        MonthNo, MonthName
+    ORDER BY 
+        MonthNo
+) D ON D.MonthNo = M.id;
+");
             $monthlyDatas = collect($monthlyDatas)->sortBy('MonthNo')->values()->all();
 
         $AmountM = implode(',', array_column($monthlyDatas, 'TotalAmount'));
