@@ -66,8 +66,9 @@
             })
             .then(response => response.json())
             .then(data => {
-                //window.location.reload();
+                
                 alert(data.message);
+                window.location.reload();
             })
             .catch(error => {
                 console.error('Error creating admin:', error);
@@ -83,9 +84,9 @@
             })
             .then(response => response.json())
             .then(data => {
-                //window.location.reload();
+                
                 alert(data.message);
-                console.log(data);
+                window.location.reload();
             })
             .catch(error => {
                 console.error('Error removing admin:', error);

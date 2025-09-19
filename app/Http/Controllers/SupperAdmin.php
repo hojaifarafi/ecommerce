@@ -11,7 +11,7 @@ class SupperAdmin extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', SupperAdminMiddleware::class]);
+        $this->middleware([SupperAdminMiddleware::class]);
     }
     public function index()
     {

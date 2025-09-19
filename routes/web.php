@@ -50,6 +50,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/acount-orders', [UserController::class, 'orders'])->name('user.orders');
     Route::get('/acount-order/{order_id}/details', [UserController::class, 'order_details'])->name('user.order.details');
     Route::put('/acount-order/cancel-order', [UserController::class, 'order_cancel'])->name('user.order.cancel');
+
+    Route::get('/supper-admin', [App\Http\Controllers\SupperAdmin::class, 'index'])->name('supper.admin');
+    Route::get('/admin/search-users/{keyword}', [SupperAdmin::class, 'admin_users'])->name('admin.users');
+    Route::put('/admin/create-admin/{id}', [SupperAdmin::class, 'create_admin'])->name('create.admin');
+    Route::delete('/admin/remove-admin/{id}', [SupperAdmin::class, 'remove_admin'])->name('remove.admin');
 });
 Route::middleware(['auth', AuthAdmin::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
@@ -96,9 +101,4 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
     Route::delete('/admin/contact/delete/{id}', [AdminController::class, 'contact_delete'])->name('admin.contact.delete');
 
     Route::get('/admin/search/{keyword}', [AdminController::class, 'search'])->name('admin.search');
-
-    Route::get('/supper-admin', [App\Http\Controllers\SupperAdmin::class, 'index'])->name('supper.admin');
-    Route::get('/admin/search-users/{keyword}', [SupperAdmin::class, 'admin_users'])->name('admin.users');
-    Route::put('/admin/create-admin/{id}', [SupperAdmin::class, 'create_admin'])->name('create.admin');
-    Route::delete('/admin/remove-admin/{id}', [SupperAdmin::class, 'remove_admin'])->name('remove.admin');
 });
