@@ -7,6 +7,7 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Middleware\AuthAdmin;
+use App\Http\Controllers\SupperAdmin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -95,4 +96,9 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
     Route::delete('/admin/contact/delete/{id}', [AdminController::class, 'contact_delete'])->name('admin.contact.delete');
 
     Route::get('/admin/search/{keyword}', [AdminController::class, 'search'])->name('admin.search');
+
+    Route::get('/supper-admin', [App\Http\Controllers\SupperAdmin::class, 'index'])->name('supper.admin');
+    Route::get('/admin/search-users/{keyword}', [SupperAdmin::class, 'admin_users'])->name('admin.users');
+    Route::put('/admin/create-admin/{id}', [SupperAdmin::class, 'create_admin'])->name('create.admin');
+    Route::delete('/admin/remove-admin/{id}', [SupperAdmin::class, 'remove_admin'])->name('remove.admin');
 });
